@@ -1,0 +1,126 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.1.3'
+	id 'io.spring.dependency-management' version '1.1.3'
+}
+
+
+group = 'kr.co.laura'
+version = '0.0.1-SNAPSHOT'
+
+
+java {
+	sourceCompatibility = '17'
+}
+
+
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	
+
+	 // Apache Commons Lang3 추가
+    //implementation 'org.apache.commons:commons-lang3:3.12.0'
+	
+	//타임리프
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'  // 선택적으로 넣을수 있는 부분(레이아웃적용)
+	
+	
+	//스프링 시큐리티
+	implementation 'org.springframework.boot:spring-boot-starter-security'	//스프링 시큐리티를 사용하기 위한 스타터 추가
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6' //타임리프에서 스프링 시큐리티를 사용하기 위한 의존성 추가
+	testImplementation 'org.springframework.security:spring-security-test' //시프링 시큐리티를 테스트하기 위한 의존성 추가
+	
+	//토큰 로그인 
+	//implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+   // runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+   // runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    //implementation 'javax.xml.bind:jaxb-api:2.3.1' //xml문서와 java객체간 매핑 자동화
+	
+	//스프링 어드민
+	implementation 'de.codecentric:spring-boot-admin-starter-server:3.1.6'
+	implementation 'de.codecentric:spring-boot-admin-starter-client:3.1.6'
+	//implementation 'spring-boot-admin-server-ui-login'
+	
+	
+	//기본
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	
+	
+	//QueryDSL 라이브러리
+	implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
+	//QClass 를 생성하기 위한 라이브러리
+	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+	
+	//JDBC
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc' //starter-data-jpa'이게 있어서, jpa라이브러리에 이미 jdbc라이브러리가 포함되어있다.
+	
+	
+	//오라클
+	runtimeOnly 'com.oracle.database.jdbc:ojdbc6:11.2.0.4'
+	
+	
+	//스프링  JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' 
+	
+	//lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	
+}
+
+
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+
+
+// Querydsl 빌드 옵션 (선택사항) 
+def querydslDir = "src/main/generated/queryDsl"    //$buildDir/generated/querydsl
+
+
+sourceSets {
+	main.java.srcDirs = ['src/main/java', querydslDir]
+	//main.java.srcDirs += [ querydslDir ]
+}
+
+//봐서 지울것 
+configurations {
+	querydsl.extendsFrom compileClasspath
+}
+
+
+tasks.withType(JavaCompile) {
+	options.generatedSourceOutputDirectory = file(querydslDir)
+}
+
+// clean 실행 시 생성된 QClass 삭제
+clean.doLast {
+	file(querydslDir).deleteDir()
+}
+
+
+
+
+
+
+

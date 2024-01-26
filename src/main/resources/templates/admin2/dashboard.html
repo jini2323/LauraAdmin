@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout2}">
+
+
+<th:block layout:fragment="content">
+
+	<main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+
+		<!-- Navbar -->
+		<nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur"
+			data-scroll="true">
+			<div class="container-fluid py-1 px-3">
+				<nav aria-label="breadcrumb">
+					<ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+						<li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a>
+						</li>
+						<li class="breadcrumb-item text-sm text-dark active" aria-current="page">Dashboard</li>
+					</ol>
+					<h6 class="font-weight-bolder mb-0">Dashboard</h6>
+				</nav>
+
+				
+				<!-- navbar 공통부분 자리 -->
+				<th:block th:replace="layout/nav :: navFragment"></th:block>
+
+
+				<div class="container-fluid py-4">
+					<div class="row">
+
+						<div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+							<div class="card">
+								<div class="card-header p-3 pt-2">
+									<div
+										class="icon icon-lg icon-shape bg-gradient-primary shadow-primary text-center border-radius-xl mt-n4 position-absolute">
+										<i class="material-icons opacity-10">person</i>
+									</div>
+									
+									
+								<div class="text-end pt-1">
+								    <p class="text-sm mb-0 text-capitalize">Today 방문자 수</p>
+								    <h4 class="mb-0" th:if="${todayCount != null}" th:text="${todayCount}"></h4>
+								    <h4 class="mb-0" th:unless="${todayCount != null}">0</h4>
+								</div>	
+																	
+								</div>
+								<hr class="dark horizontal my-0">
+								<div class="card-footer p-3">
+									
+										<p class="mb-0">Total 누적방문 수 <span class="text-success text-sm font-weight-bolder" th:text="${totalVisitCount != null ? totalVisitCount : 0}"></span> 명</p>	
+								</div>
+							</div>
+						</div>
+
+						<div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+							<div class="card">
+								<div class="card-header p-3 pt-2">
+									<div
+										class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+										<i class="material-icons opacity-10">person</i>
+									</div>
+									
+								<div class="text-end pt-1">
+							    <p class="text-sm mb-0 text-capitalize">Today 가입한 회원 수</p>
+							    <h4 class="mb-0" th:text="${todayNewMem != null ? todayNewMem : 0}">0</h4>
+								</div>
+							</div>
+								<hr class="dark horizontal my-0">
+								<div class="card-footer p-3">
+									<p class="mb-0">Total 회원 수<span class="text-danger text-sm font-weight-bolder" th:text="${totalMem}">
+										</span> 명</p>
+								</div>
+							</div>
+						</div>
+
+
+						<div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+							<div class="card">
+								<div class="card-header p-3 pt-2">
+									<div
+										class="icon icon-lg icon-shape bg-gradient-dark shadow-dark text-center border-radius-xl mt-n4 position-absolute">
+										<i class="material-icons opacity-10">weekend</i>
+									</div>
+						<div class="text-end pt-1">
+						    <p class="text-sm mb-0 text-capitalize">Today Open Funding!</p>
+						    <h4 class="mb-0" th:if="${todayOpenfundings != null}" th:text="${todayOpenfundings}">0</h4>
+						    <h4 class="mb-0" th:if="${todayOpenfundings == null}" th:text="0"></h4>
+						</div>
+					</div>
+							<hr class="dark horizontal my-0">
+								<div class="card-footer p-3">
+									<p class="mb-0">Total 펀딩 수 <span class="text-success text-sm font-weight-bolder" th:text="${totalMem}">
+										</span> 개</p>
+								</div>
+				</div>
+			</div>
+
+						<div class="col-xl-3 col-sm-6">
+							<div class="card">
+								<div class="card-header p-3 pt-2">
+									<div
+										class="icon icon-lg icon-shape bg-gradient-info shadow-info text-center border-radius-xl mt-n4 position-absolute">
+										<i class="material-icons opacity-10">weekend</i>
+									</div>
+									<div class="text-end pt-1">
+   									 <p class="text-sm mb-0 text-capitalize">Today Total 펀딩참여 금액</p>
+    								<h4 class="mb-0" th:text="${totalTodayMoney} ? ${totalTodayMoney} : '0'"></h4>
+									</div>
+								</div>
+								<hr class="dark horizontal my-0">
+								<div class="card-footer p-3">
+										<p class="mb-0">Total 펀딩금액 <span class="text-success text-sm font-weight-bolder" th:text="${totalFunPatiMoney}">
+										</span> 원</p>
+								</div>
+							</div>
+						</div>
+					</div>
+						<!--비회원 저번주 방문자 수 그래프-->
+					<div class="row mt-4">
+						<div class="col-lg-4 col-md-6 mt-4 mb-4">
+							<div class="card z-index-2 ">
+								<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+									<div class="bg-gradient-primary shadow-primary border-radius-lg py-3 pe-1">
+										<div class="chart">
+											<canvas id="chart-bars" class="chart-canvas" height="170">
+											</canvas>
+										</div>
+									</div>
+								</div>
+								<div class="card-body">
+									<h6 class="mb-0 ">주간 방문자 수</h6>
+									<p class="text-sm ">(<span class="font-weight-bolder">매일 업데이트 </span>) </p>
+									<hr class="dark horizontal">
+									<div class="d-flex ">
+										<i class="material-icons text-sm my-auto me-1">schedule</i>
+										<p class="mb-0 text-sm">최종 업데이트 3일 전 </p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--비회원 저번주 방문자 수 그래프 끝-->
+						<div class="col-lg-4 col-md-6 mt-4 mb-4">
+							<div class="card z-index-2  ">
+								<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+									<div class="bg-gradient-success shadow-success border-radius-lg py-3 pe-1">
+										<div class="chart">
+											<canvas id="chart-line" class="chart-canvas" height="170"></canvas>
+										</div>
+									</div>
+								</div>
+								<div class="card-body">
+									<h6 class="mb-0 ">주간 새 회원 수</h6>
+									<p class="text-sm "> (<span class="font-weight-bolder">매일 업데이트 </span>) 
+										</p>
+									<hr class="dark horizontal">
+									<div class="d-flex ">
+										<i class="material-icons text-sm my-auto me-1">schedule</i>
+										<p class="mb-0 text-sm"> 최종 업데이트 1일 전 </p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-lg-4 mt-4 mb-3">
+							<div class="card z-index-2 ">
+								<div class="card-header p-0 position-relative mt-n4 mx-3 z-index-2 bg-transparent">
+									<div class="bg-gradient-dark shadow-dark border-radius-lg py-3 pe-1">
+										<div class="chart">
+											<canvas id="chart-line-tasks" class="chart-canvas" height="170"></canvas>
+										</div>
+									</div>
+								</div>
+								<div class="card-body">
+									<h6 class="mb-0 ">주간 오픈한 펀딩 수</h6>
+									<p class="text-sm "> (<span class="font-weight-bolder">매일 업데이트 </span>) 
+										</p>
+									<hr class="dark horizontal">
+									<div class="d-flex ">
+										<i class="material-icons text-sm my-auto me-1">schedule</i>
+										<p class="mb-0 text-sm">최종 업데이트 1일 전</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row mb-4">
+						<div class="col-lg-8 col-md-6 mb-md-0 mb-4">
+							<div class="card">
+								<div class="card-header pb-0">
+									<div class="row">
+										<div class="col-lg-6 col-7">
+											<h6>최신 펀딩</h6>
+											<p class="text-sm mb-0">
+												<i class="fa fa-check text-info" aria-hidden="true"></i>
+												<span class="font-weight-bold ms-1">현재 펀딩금액 순위</span> 2시간 전
+											</p>
+										</div>
+										<div class="col-lg-6 col-5 my-auto text-end">
+											
+											<div class="dropdown float-lg-end pe-4">
+												<!-- ... <a class="cursor-pointer" id="dropdownTable" data-bs-toggle="dropdown"
+													aria-expanded="false">
+													<i class="fa fa-ellipsis-v text-secondary"></i>
+												</a>--> 
+												
+												<ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5"
+													aria-labelledby="dropdownTable">
+													<li><a class="dropdown-item border-radius-md"
+															href="javascript:;">Action</a></li>
+													<li><a class="dropdown-item border-radius-md"
+															href="javascript:;">Another action</a></li>
+													<li><a class="dropdown-item border-radius-md"
+															href="javascript:;">Something else here</a></li>
+												</ul>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="card-body px-0 pb-2">
+									<div class="table-responsive">
+										<table class="table align-items-center mb-0">
+											<thead>
+												<tr>
+													<th
+														class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+														펀딩제목</th>
+													<th
+														class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+														작성자</th>
+													<th
+														class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+														목표금액</th>
+													<th
+														class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+														현재 펀딩금액</th>	
+													<th
+														class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+														목표달성률</th>
+												</tr>
+												</thead>
+												<tbody>
+										<!--펀딩 테이블 반복 영역-->		
+											<!--	<tr th:each="top6FundingList : ${top6FundingList}">-->
+												<tr th:each="funding, status : ${top6FundingList}">
+													<td>
+														<div class="d-flex px-2 py-1">
+															<div>
+																<img src="static/resources/img/template/small-logos/logo-xd.svg"
+																	class="avatar avatar-sm me-3" alt="xd">
+															</div>
+															<div class="d-flex flex-column justify-content-center">
+																<h6 class="mb-0 text-sm" th:text="${funding.funtitle}"></h6>
+															</div>
+														</div>
+													</td>
+										
+													<td class="align-middle text-center text-sm">
+														<span class="text-xs font-weight-bold" th:text="${funding.funwriter}"></span>
+													</td>
+													<td class="align-middle text-center text-sm">
+														<span class="text-xs font-weight-bold" th:text="${funding.targetprice}"></span>
+													</td>
+													
+													<td class="align-middle text-center text-sm">
+														<span class="text-xs font-weight-bold" th:text="${funding.totalFunMoney}"></span>
+													</td>
+													
+									<td class="align-middle">
+									    <div class="progress-wrapper w-75 mx-auto">
+									        <div class="progress-info">
+									            <div class="progress-percentage">
+									                <span class="text-xs font-weight-bold" 
+									                      th:text="${achievementRates[status.index] + '%'}"></span>
+									            </div>
+									        </div>
+									        <div class="progress">
+									          <div class="progress-bar bg-gradient-info" role="progressbar" 
+     th:style="'width: ' + (${achievementRates[status.index]} > 100 ? '100%' : ${achievementRates[status.index]} + '%')">
+     </div>
+									        </div>
+									    </div>
+									</td>
+							    </tr>	
+						</tbody>
+					<!--펀딩 테이블 반복 영역 끝-->	
+				</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!--인증회원 업데이트 부분-->
+						<div class="col-lg-4 col-md-6">
+							<div class="card h-100">
+								<div class="card-header pb-0">
+									<h6>최신 인증회원</h6>
+									<p class="text-sm">
+										<i class="fa fa-arrow-up text-success" aria-hidden="true"></i>
+										<span class="font-weight-bold">24%</span> this month
+									</p>
+								</div>
+								<!--인증 회원 반복 파트-->
+					<div class="card-body p-3">
+						    <div class="timeline timeline-one-side">
+						        <div th:each="memDTO : ${newConfirmedMems}" class="timeline-block">
+						            <span class="timeline-step">
+						                <i class="material-icons text-dark text-gradient">payments</i>
+						            </span>
+						            <div class="timeline-content">
+						                <h6 class="text-dark text-sm font-weight-bold mb-0" th:text="${memDTO.nickname + ', ' + memDTO.name}"></h6>
+						           <p class="text-secondary font-weight-bold text-xs mt-1 mb-0" th:text="${memDTO.ardate + ', ' + memDTO.arstatus}"></p>
+						     </div>
+				        </div>
+				    </div>
+				</div>	
+
+	<!--인증 회원 반복 파트 끝-->
+	</div>
+</div>
+	<!--인증회원 업데이트 부분 끝-->		
+						
+</div>
+					
+<!--푸터자리-->
+	<footer th:replace="layout/footer2 :: footerFragment"></footer>
+
+	</div>
+	</main>
+
+	<div class="fixed-plugin">
+		<a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
+			<i class="material-icons py-2">settings</i>
+		</a>
+		<div class="card shadow-lg">
+			<div class="card-header pb-0 pt-3">
+				<div class="float-start">
+					<h5 class="mt-3 mb-0">Material UI Configurator</h5>
+					<p>See our dashboard options.</p>
+				</div>
+				<div class="float-end mt-4">
+					<button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
+						<i class="material-icons">clear</i>
+					</button>
+				</div>
+				<!-- End Toggle Button -->
+			</div>
+			<hr class="horizontal dark my-1">
+			<div class="card-body pt-sm-3 pt-0">
+				<!-- Sidebar Backgrounds -->
+				<div>
+					<h6 class="mb-0">Sidebar Colors</h6>
+				</div>
+				<a href="javascript:void(0)" class="switch-trigger background-color">
+					<div class="badge-colors my-2 text-start">
+						<span class="badge filter bg-gradient-primary active" data-color="primary"
+							onclick="sidebarColor(this)"></span>
+						<span class="badge filter bg-gradient-dark" data-color="dark"
+							onclick="sidebarColor(this)"></span>
+						<span class="badge filter bg-gradient-info" data-color="info"
+							onclick="sidebarColor(this)"></span>
+						<span class="badge filter bg-gradient-success" data-color="success"
+							onclick="sidebarColor(this)"></span>
+						<span class="badge filter bg-gradient-warning" data-color="warning"
+							onclick="sidebarColor(this)"></span>
+						<span class="badge filter bg-gradient-danger" data-color="danger"
+							onclick="sidebarColor(this)"></span>
+					</div>
+				</a>
+				<!-- Sidenav Type -->
+				<div class="mt-3">
+					<h6 class="mb-0">Sidenav Type</h6>
+					<p class="text-sm">Choose between 2 different sidenav types.</p>
+				</div>
+				<div class="d-flex">
+					<button class="btn bg-gradient-dark px-3 mb-2 active" data-class="bg-gradient-dark"
+						onclick="sidebarType(this)">Dark</button>
+					<button class="btn bg-gradient-dark px-3 mb-2 ms-2" data-class="bg-transparent"
+						onclick="sidebarType(this)">Transparent</button>
+					<button class="btn bg-gradient-dark px-3 mb-2 ms-2" data-class="bg-white"
+						onclick="sidebarType(this)">White</button>
+				</div>
+				<p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
+				<!-- Navbar Fixed -->
+				<div class="mt-3 d-flex">
+					<h6 class="mb-0">Navbar Fixed</h6>
+					<div class="form-check form-switch ps-0 ms-auto my-auto">
+						<input class="form-check-input mt-1 ms-auto" type="checkbox" id="navbarFixed"
+							onclick="navbarFixed(this)">
+					</div>
+				</div>
+				<hr class="horizontal dark my-3">
+				<div class="mt-2 d-flex">
+					<h6 class="mb-0">Light / Dark</h6>
+					<div class="form-check form-switch ps-0 ms-auto my-auto">
+						<input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version"
+							onclick="darkMode(this)">
+					</div>
+				</div>
+				<hr class="horizontal dark my-sm-4">
+				<a class="btn bg-gradient-info w-100"
+					href="https://www.creative-tim.com/product/material-dashboard-pro">Free Download</a>
+				<a class="btn btn-outline-dark w-100"
+					href="https://www.creative-tim.com/learning-lab/bootstrap/overview/material-dashboard">View
+					documentation</a>
+				<div class="w-100 text-center">
+					<a class="github-button" href="https://github.com/creativetimofficial/material-dashboard"
+						data-icon="octicon-star" data-size="large" data-show-count="true"
+						aria-label="Star creativetimofficial/material-dashboard on GitHub">Star</a>
+					<h6 class="mt-3">Thank you for sharing!</h6>
+					<a href="https://twitter.com/intent/tweet?text=Check%20Material%20UI%20Dashboard%20made%20by%20%40CreativeTim%20%23webdesign%20%23dashboard%20%23bootstrap5&amp;url=https%3A%2F%2Fwww.creative-tim.com%2Fproduct%2Fsoft-ui-dashboard"
+						class="btn btn-dark mb-0 me-2" target="_blank">
+						<i class="fab fa-twitter me-1" aria-hidden="true"></i> Tweet
+					</a>
+					<a href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/material-dashboard"
+						class="btn btn-dark mb-0 me-2" target="_blank">
+						<i class="fab fa-facebook-square me-1" aria-hidden="true"></i> Share
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!--   Core JS Files   -->
+	<script src="static/resources/js/template/core/popper.min.js"></script>
+	<script src="static/resources/js/template/core/bootstrap.min.js"></script>
+	<script src="static/resources/js/template/plugins/perfect-scrollbar.min.js"></script>
+	<script src="static/resources/js/template/plugins/smooth-scrollbar.min.js"></script>
+	<script src="static/resources/js/template/plugins/chartjs.min.js"></script>
+
+
+<!-- HTML 코드 내에서 스크립트 영역으로 타임리프 변수를 전달 -->
+<!--첫번째 분홍 차트 영역-->
+<script th:inline="javascript">
+
+   		 // 오늘의 방문자 수
+	   var todayCountData = /*[[ ${todayCount} ]]*/ null;
+	    if (todayCountData === null) {
+	       todayCountData = 0;
+	   }
+
+    	// 날짜 데이터 매핑
+	    var counts = [];
+	    var labels = [];
+	    var dateLabels = /*[[${lastWeekDatesAndCount}]]*/ []; // 서버에서 받은 날짜와 방문자 수 데이터
+
+		dateLabels.forEach(function (data) {
+		    // 날짜를 간단한 형식으로 포맷팅 (예: "8.13")
+		    var date = new Date(data.visitDate);
+		    var formattedDate = (date.getMonth() + 1) + "." + date.getDate();
+		    
+		    // date를 라벨로 사용
+		    labels.push(formattedDate);
+		    
+		    // 데이터가 null이면 0으로 처리
+		    if (data.visitorCount === null) {
+		        counts.push(0);
+		    } else {
+		        counts.push(data.visitorCount);
+		    }
+		});
+
+    // 먼저 확인하기 위해 값을 콘솔에 출력
+ 	console.log("todayCountData: ", todayCountData);
+	console.log("dateLabels: ", dateLabels);
+	console.log("labels: ", labels);
+	console.log("counts: ", counts);
+ 
+    // 차트 초기화 함수
+    function initializeChart() {
+        var ctx = document.getElementById("chart-bars").getContext("2d");
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: labels, // 7일전 부터 어제까지의 날짜 데이터
+                datasets: [{
+                    label: "Sales",
+                    tension: 0.4,
+                    borderWidth: 0,
+                    borderRadius: 4,
+                    borderSkipped: false,
+                    backgroundColor: "rgba(255, 255, 255, .8)",
+                    data: counts, // 방문자수 데이터 
+                    maxBarThickness: 6
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            drawBorder: false,
+                            display: true,
+                            drawOnChartArea: true,
+                            drawTicks: false,
+                            borderDash: [5, 5],
+                            color: 'rgba(255, 255, 255, .2)'
+                        },
+                        ticks: {
+                            suggestedMin: 0,
+                            suggestedMax: 500,
+                            beginAtZero: true,
+                            padding: 10,
+                            font: {
+                                size: 14,
+                                weight: 300,
+                                family: "Roboto",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                            color: "#fff"
+                        },
+                    },
+                    x: {
+                        grid: {
+                            drawBorder: false,
+                            display: true,
+                            drawOnChartArea: true,
+                            drawTicks: false,
+                            borderDash: [5, 5],
+                            color: 'rgba(255, 255, 255, .2)'
+                        },
+                        ticks: {
+                            display: true,
+                            color: '#f8f9fa',
+                            padding: 10,
+                            font: {
+                                size: 14,
+                                weight: 300,
+                                family: "Roboto",
+                                style: 'normal',
+                                lineHeight: 2
+                            },
+                        }
+                    },
+                },
+            },
+        });
+    }
+
+    // 페이지 로드 시 차트 초기화
+    initializeChart();
+</script>
+<!--첫번째 분홍 차트 영역 끝-->	
+
+
+
+
+<!--2번째 녹색 차트 영역--> 
+<script th:inline="javascript">
+		
+		// 날짜 데이터 매핑
+	    var counts2 = []; //새 회원수 
+	    var labels2 = []; //mdata
+		// 저번주 새 회원 수
+		var dateLabels2 = /*[[ ${lastWeekNewMem} ]]*/ [];
+		//위에꺼 DTO 리스트 형 
+
+
+		dateLabels2.forEach(function (data) {
+		    // 가입수가 null이면 0으로 처리
+		    if (data.countNewMems === null) {
+		        counts2.push(0);
+		    } else {
+		        counts2.push(data.countNewMems);
+		    }
+		    
+		    var date = new Date(data.mdate);
+		    var formattedDate = (date.getMonth() + 1) + '.' + date.getDate(); // 월은 0부터 시작하므로 +1
+		    labels2.push(formattedDate); // 포맷된 날짜를 가입날짜로 할당
+		});
+
+
+
+		// 데이터를 역순으로 정렬
+		//lastWeekCountData.reverse();
+
+		// 먼저 확인하기 위해 값을 콘솔에 출력
+		console.log("dateLabels2: ", dateLabels2);
+		console.log("labels2: ", labels2);
+		console.log("counts2: ", counts2);
+		
+		
+		function initializeChart2() {
+		var ctx2 = document.getElementById("chart-line").getContext("2d");
+		new Chart(ctx2, {
+			type: "line",
+			data: {
+				labels: labels2, //가입날짜 
+				datasets: [{
+					label: "Mobile apps",
+					tension: 0,
+					borderWidth: 0,
+					pointRadius: 5,
+					pointBackgroundColor: "rgba(255, 255, 255, .8)",
+					pointBorderColor: "transparent",
+					borderColor: "rgba(255, 255, 255, .8)",
+					borderColor: "rgba(255, 255, 255, .8)",
+					borderWidth: 4,
+					backgroundColor: "transparent",
+					fill: true,
+					data: counts2, // 새 회원수 데이터
+					maxBarThickness: 6
+
+				}],
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				plugins: {
+					legend: {
+						display: false,
+					}
+				},
+				interaction: {
+					intersect: false,
+					mode: 'index',
+				},
+				scales: {
+					y: {
+						grid: {
+							drawBorder: false,
+							display: true,
+							drawOnChartArea: true,
+							drawTicks: false,
+							borderDash: [5, 5],
+							color: 'rgba(255, 255, 255, .2)'
+						},
+						ticks: {
+							display: true,
+							color: '#f8f9fa',
+							padding: 10,
+							font: {
+								size: 14,
+								weight: 300,
+								family: "Roboto",
+								style: 'normal',
+								lineHeight: 2
+							},
+						}
+					},
+					x: {
+						grid: {
+							drawBorder: false,
+							display: false,
+							drawOnChartArea: false,
+							drawTicks: false,
+							borderDash: [5, 5]
+						},
+						ticks: {
+							display: true,
+							color: '#f8f9fa',
+							padding: 10,
+							font: {
+								size: 14,
+								weight: 300,
+								family: "Roboto",
+								style: 'normal',
+								lineHeight: 2
+							},
+						}
+					},
+				},
+			},
+		});
+		}
+	initializeChart2();
+	</script>
+	<!--2번째 차트 영역 끝--> 
+	
+	
+	<!--3번째 검정 차트 영역--> 	
+	<script th:inline="javascript">
+
+		// 날짜 데이터 매핑
+	    var counts3 = []; //새 오픈한 펀딩 수 
+	    var labels3 = []; //sdate 오픈한 날짜 
+		// 저번주 새 회원 수
+		var dateLabels3 = /*[[ ${lasgWeekOpenFundings} ]]*/ [];
+		//위에꺼 DTO 리스트 형 
+
+		dateLabels3.forEach(function (data) {
+		    // 가입수가 null이면 0으로 처리
+		    if (data.countNewOpenFunding === null) {
+		        counts3.push(0);
+		    } else {
+		        counts3.push(data.countNewOpenFunding);
+		    }
+		    
+		    var date = new Date(data.sdate);
+		    var formattedDate = (date.getMonth() + 1) + '.' + date.getDate(); // 월은 0부터 시작하므로 +1
+		    labels3.push(formattedDate); // 포맷된 날짜를 가입날짜로 할당
+		});
+
+		// 먼저 확인하기 위해 값을 콘솔에 출력
+		console.log("dateLabels3: ", dateLabels3);
+		console.log("labels3: ", labels3);
+		console.log("counts3: ", counts3);
+
+
+
+	function initializeChart3() {	
+		
+		var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
+
+		new Chart(ctx3, {
+			type: "line",
+			data: {
+				labels:labels3, //["M", "T", "W", "T", "F", "Sa", "Su"],
+				datasets: [{
+					label: "Mobile apps",
+					tension: 0,
+					borderWidth: 0,
+					pointRadius: 5,
+					pointBackgroundColor: "rgba(255, 255, 255, .8)",
+					pointBorderColor: "transparent",
+					borderColor: "rgba(255, 255, 255, .8)",
+					borderWidth: 4,
+					backgroundColor: "transparent",
+					fill: true,
+					data: counts3,    //데이터를 여기에 할당
+					maxBarThickness: 6
+
+				}],
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				plugins: {
+					legend: {
+						display: false,
+					}
+				},
+				interaction: {
+					intersect: false,
+					mode: 'index',
+				},
+				scales: {
+					y: {
+						grid: {
+							drawBorder: false,
+							display: true,
+							drawOnChartArea: true,
+							drawTicks: false,
+							borderDash: [5, 5],
+							color: 'rgba(255, 255, 255, .2)'
+						},
+						ticks: {
+							display: true,
+							padding: 10,
+							color: '#f8f9fa',
+							font: {
+								size: 14,
+								weight: 300,
+								family: "Roboto",
+								style: 'normal',
+								lineHeight: 2
+							},
+						}
+					},
+					x: {
+						grid: {
+							drawBorder: false,
+							display: false,
+							drawOnChartArea: false,
+							drawTicks: false,
+							borderDash: [5, 5]
+						},
+						ticks: {
+							display: true,
+							color: '#f8f9fa',
+							padding: 10,
+							font: {
+								size: 14,
+								weight: 300,
+								family: "Roboto",
+								style: 'normal',
+								lineHeight: 2
+							},
+						}
+					},
+				},
+			},
+		});
+		}
+	initializeChart3();	
+	</script>
+	<!--3번째 검정 차트 영역 끝--> 
+	
+	<!--  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  
+  
+   Github buttons 
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+   Control Center for Material Dashboard: parallax effects, scripts for the example pages etc 
+  <script src="static/resources/js/template/material-dashboard.min.js?v=3.1.0"></script>
+-->
+
+</th:block>

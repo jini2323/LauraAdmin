@@ -1,0 +1,183 @@
+
+-- 회원가입
+INSERT INTO MEM(NUM,EMAIL,PWD,NAME,NICKNAME,TEL,MEMGENDER,BIRTHDAY,
+ARPROFILE, PROFILEPIC,MDATE,MEMPOINT)
+		VALUES (MEM_SEQ.NEXTVAL,'loopy22@naver.com','11111111','김루피','러블리루피2','010223222323','여자',
+		to_date('1994/09/18','YYYY/MM/DD'),NULL,NULL,to_date('2023/09/25','YYYY/MM/DD'), 300);
+
+INSERT INTO MEM(NUM,EMAIL,PWD,NAME,NICKNAME,TEL,MEMGENDER,BIRTHDAY,
+ARPROFILE, PROFILEPIC,MDATE,MEMPOINT)
+		VALUES (MEM_SEQ.NEXTVAL,'sd3edseㅇㅇd@dcom','1S3dㅇs1','라dㅇe라','L3ㅇㅇㅇedea','03eㅇddㅇddf22','여자',
+		to_date('2023/09/18','YYYY/MM/DD'),'arprofic','logo1.png',SYSDATE,300);
+
+COMMIT
+--새 회원수 용 더미데이터 9월 11~ 17일
+INSERT INTO MEM(NUM,EMAIL,PWD,NAME,NICKNAME,TEL,MEMGENDER,BIRTHDAY,
+ARPROFILE, PROFILEPIC,MDATE,MEMPOINT)
+		VALUES (MEM_SEQ.NEXTVAL,'s12@2n3ave.com','11','김라라1','뤼피12','010222','여자',
+		to_date('2023/09/18','YYYY/MM/DD'),'arprofic','logo1.png',TO_DATE('2023-09-18', 'YYYY-MM-DD'),300);
+
+
+INSERT INTO MEM(NUM,EMAIL,PWD,NAME,NICKNAME,TEL,MEMGENDER,BIRTHDAY,
+ARPROFILE, PROFILEPIC,MDATE,MEMPOINT)
+		VALUES (MEM_SEQ.NEXTVAL,'s13a2dd3@2sves.com','11','김라','뤼2s2da피dd132','01202dad32sssd22','여자',
+		to_date('2023/09/18','YYYY/MM/DD'),'arprofic','logo1.png',TO_DATE('2023-09-19', 'YYYY-MM-DD'),300);
+
+INSERT INTO MEM(NUM,EMAIL,PWD,NAME,NICKNAME,TEL,MEMGENDER,BIRTHDAY,
+ARPROFILE, PROFILEPIC,MDATE,MEMPOINT)
+		VALUES (MEM_SEQ.NEXTVAL,'s13ddddddd3@2fe.com','11','김라','뤼2dddd피2sdd132','01d02dddd32sd22','여자',
+		to_date('2023/09/18','YYYY/MM/DD'),'arprofic','logo1.png',TO_DATE('2023-09-20', 'YYYY-MM-DD'),300);
+
+INSERT INTO MEM(NUM,EMAIL,PWD,NAME,NICKNAME,TEL,MEMGENDER,BIRTHDAY,
+ARPROFILE, PROFILEPIC,MDATE,MEMPOINT)
+		VALUES (MEM_SEQ.NEXTVAL,'s13sssssfd@.com','11','김라','뤼d2','0dsd2','여자',
+		to_date('2023/09/18','YYYY/MM/DD'),'arprofic','logo1.png',TO_DATE('2023-09-22', 'YYYY-MM-DD'),300);
+
+INSERT INTO MEM(NUM,EMAIL,PWD,NAME,NICKNAME,TEL,MEMGENDER,BIRTHDAY,
+ARPROFILE, PROFILEPIC,MDATE,MEMPOINT)
+		VALUES (MEM_SEQ.NEXTVAL,'svvsssv@s2n3dda66','11','김라','뤼sddsdsd','d33','여자',
+		to_date('2023/09/18','YYYY/MM/DD'),'arprofic','logo1.png',TO_DATE('2023-09-23', 'YYYY-MM-DD'),300);
+
+INSERT INTO MEM(NUM,EMAIL,PWD,NAME,NICKNAME,TEL,MEMGENDER,BIRTHDAY,
+ARPROFILE, PROFILEPIC,MDATE,MEMPOINT)
+		VALUES (MEM_SEQ.NEXTVAL,'svv33sw333@ssddsad.com','11','김라','뤼3w332d3sawsd','0d333sa24ws3s3sds552','여자',
+		to_date('2023/09/18','YYYY/MM/DD'),'arprofic','logo1.png',TO_DATE('2023-09-24', 'YYYY-MM-DD'),300);
+
+
+INSERT INTO MEM(NUM,EMAIL,PWD,NAME,NICKNAME,TEL,MEMGENDER,BIRTHDAY,
+ARPROFILE, PROFILEPIC,MDATE,MEMPOINT)
+		VALUES (MEM_SEQ.NEXTVAL,'sv34sv@s2333n333333asd.com','11','김라','뤼33434d33sd','344333432','여자',
+		to_date('2023/09/18','YYYY/MM/DD'),'arprofic','logo1.png',TO_DATE('2023-09-17', 'YYYY-MM-DD'),300);
+
+
+COMMIT;
+
+
+-- 예술인 인증
+UPDATE MEM SET ARSTATUS='인증', ADDR='가산동', BANKACCOUNT='111111111111', ARPROFILEPIC='profile.png', ARPROFILE='안녕하세요!', ARDATE=SYSDATE WHERE NUM=23;
+UPDATE MEM SET ARSTATUS='인증', ADDR='가산동', BANKACCOUNT='111111111111', ARPROFILEPIC='profile.png', ARPROFILE='안녕하세요!', ARDATE=SYSDATE WHERE NUM=4;
+UPDATE MEM SET ARSTATUS='인증', ADDR='가산동', BANKACCOUNT='111111111111', ARPROFILEPIC='profile.png', ARPROFILE='안녕하세요!', ARDATE=SYSDATE WHERE NUM=8;
+UPDATE MEM SET ARSTATUS='인증', ADDR='가산동', BANKACCOUNT='111111111111', ARPROFILEPIC='profile.png', ARPROFILE='안녕하세요!', ARDATE=SYSDATE WHERE NUM=7;
+
+-- 펀딩 업로드
+INSERT INTO FBOARD
+		VALUES(FBOARD_SEQ.NEXTVAL, 23,'펀딩영화 카테고리', '펀딩 제목', '펀딩 작성자',
+		'펀딩 본문 내용 작성', '펀딩 미리보기 요약', 1000000, 20000, 'her.jpg',
+		to_date('2023/09/24','YYYY/MM/DD'), to_date('2023/09/18','YYYY/MM/DD'),'내용이미지', 'videoLink', 'actor1.jpg', '펀딩을 하는 목적 설명',
+		'펀딩 성공시 사용할 예산안', sysdate);
+
+--오늘 오픈한 펀딩
+INSERT INTO FBOARD
+		VALUES(FBOARD_SEQ.NEXTVAL, 14,'펀딩영화 카테고리', '펀딩 제목', '펀딩 작성자',
+		'펀딩 본문 내용 작성', '펀딩 미리보기 요약', 1000000, 20000, 'her.jpg',
+		sysdate, to_date('2023/09/18','YYYY/MM/DD'),'내용이미지', 'videoLink', 'actor1.jpg', '펀딩을 하는 목적 설명',
+		'펀딩 성공시 사용할 예산안', sysdate);
+
+INSERT INTO FBOARD
+		VALUES(FBOARD_SEQ.NEXTVAL,3,'펀딩영화 카테고리', '펀딩 제목', '펀딩 작성자',
+		'펀딩 본문 내용 작성', '펀딩 미리보기 요약', 1000000, 20000, 'her.jpg',
+		to_date('2023/09/17 17:00:00', 'YYYY/MM/DD HH24:MI:SS'), to_date('2023/09/18','YYYY/MM/DD'),'내용이미지', 'videoLink', 'actor1.jpg', '펀딩을 하는 목적 설명',
+		'펀딩 성공시 사용할 예산안', sysdate);
+COMMIT
+
+to_date('2023/09/17 17:00:00', 'YYYY/MM/DD HH24:MI:SS')
+
+24 26
+ 회원  2~26
+4 2
+53
+63
+-- 펀딩 참여
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES( 9, 7, 3245000, 'P', sysdate  );
+
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES( 17, 11, 125000, 'P', TO_DATE('2023-09-24', 'YYYY-MM-DD'));
+
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES(4, 3 , 10000 ,'P',TO_DATE('2023-09-11', 'YYYY-MM-DD'));
+
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES(20, 6 , 10000 ,'P',TO_DATE('2023-09-13', 'YYYY-MM-DD'));
+COMMIT
+
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES(3, 2 , 10000 ,'P',SYSDATE);
+
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES(5, 4 , 10000 ,'P',SYSDATE);
+
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES(7, 2 , 15000 ,'P',SYSDATE);
+
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES(10, 2 , 100000 ,'P',SYSDATE);
+
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES(10, 8 , 10000 ,'P',SYSDATE);
+
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES(6, 7 , 5000 ,'P',SYSDATE);
+
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES(11, 2 , 10000 ,'P',SYSDATE);
+
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES(19, 6 , 10000 ,'P',SYSDATE);
+
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES(8, 3 , 10000 ,'P',SYSDATE);
+
+INSERT INTO FUNDING_PARTI (fmem_num, funnum_num, funmoney, funstatus, joindate)
+VALUES(6, 8 , 10000 ,'P',SYSDATE);
+
+COMMIT
+
+
+
+
+
+-- 게시판
+INSERT INTO NEWS_UPLOAD VALUES(NEWSNUM_SEQ.NEXTVAL,
+		'laura','디스패처서블릿','오늘의 영화 소식','뉴스 본문 내용 작성','뉴스 요약 미리보기','news_m1.png','뉴스링크',0,SYSDATE);
+
+INSERT INTO party
+		VALUES(PARTY_SEQ.NEXTVAL,2,'파티작성자','파티모집합니다','가산 영화 파티원 모집합니다','her.jpg',0,'가산동',to_date('2023/09/08','YYYY/MM/DD'),sysdate);
+
+INSERT INTO trboard VALUES(
+		TRBOARD_SEQ.NEXTVAL,2,'교환작성자','굿즈교환해요','her.jpg',0,'10000','굿즈 교환할 분 찾아요','가산동',SYSDATE);
+
+--이벤트
+INSERT INTO EVBOARD VALUES(EVBOARD_SEQ.NEXTVAL, 'EVTITLE' , 'EVCONTENT',
+'REWARD', 'EVIMG' ,'EVVEO' , 0 , TO_DATE('2023-08-12', 'YYYY-MM-DD'), TO_DATE('2023-08-12', 'YYYY-MM-DD')+10 ,SYSDATE);
+
+--이벤트 참여
+INSERT INTO EVPBOARD (EVPNUM, EVBOARDNUM, EVWRITER, EVID, EVCONT,EVPDATE)
+VALUES(EVPBOARD_SEQ.NEXTVAL,2, 'loopy@naver.com', '러블리루피', '참여합니당', SYSDATE );
+
+
+
+--방문자 수 카운트 테이블
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (10, TO_DATE('2023-09-10', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (15, TO_DATE('2023-09-11', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (20, TO_DATE('2023-09-12', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (13, TO_DATE('2023-09-13', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (40, TO_DATE('2023-09-14', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (67, TO_DATE('2023-09-15', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (88, TO_DATE('2023-09-16', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (34, TO_DATE('2023-09-17', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (56, TO_DATE('2023-09-18', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (132, TO_DATE('2023-09-19', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (65, TO_DATE('2023-09-19', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (45, TO_DATE('2023-09-20', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (66, TO_DATE('2023-09-21', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (80, TO_DATE('2023-09-22', 'YYYY-MM-DD'));
+--INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (40, TO_DATE('2023-09-23', 'YYYY-MM-DD'));
+INSERT INTO VISIT (Countnum, VISIT_DATE) VALUES (40, TO_DATE('2023-09-24', 'YYYY-MM-DD'));
+COMMIT
+
+
+
+
+ROLLBACK;
+COMMIT;

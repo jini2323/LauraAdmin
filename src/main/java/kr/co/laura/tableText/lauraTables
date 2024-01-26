@@ -1,0 +1,330 @@
+
+
+-- 회원 테이블
+CREATE TABLE MEM (
+  num         	number,
+  email       	varchar2(45) NOT NULL UNIQUE,
+  pwd         	varchar2(15) NOT NULL,
+  name        	varchar2(45) NOT NULL,
+  nickname    	varchar2(45) NOT NULL UNIQUE,
+  tel         	varchar2(30) NOT NULL UNIQUE,
+  memgender   	varchar2(5) NOT NULL,
+  birthday    	date NOT NULL,
+  profilepic  	varchar2(150),
+  mdate       	date NOT NULL,
+  grade       	varchar2(10) DEFAULT '브론즈' NOT NULL,	-- 회원 등급
+  arstatus    	varchar2(30) DEFAULT '미인증' NOT NULL,	-- 예술인 인증상태
+  addr        	varchar2(300),													-- 주소
+  bankaccount 	varchar2(25),										 				-- 계좌번호
+  arprofilepic  varchar2(150),
+  --arprofile   	varchar2(255),												-- 예술인 프로필사진
+  arprofile   	clob,																		-- 예술인 자기소개/이력
+  ardate      	date,																		-- 인증일
+  mempoint     number NOT NULL,													-- 포인트
+  PRIMARY KEY (num));
+
+
+CREATE SEQUENCE MEM_SEQ
+INCREMENT BY 1 START WITH 1;
+
+------------------------------------------------------
+-- 포인트 테이블
+CREATE TABLE point (
+  pointnum  number,
+  MEMnum    number NOT NULL,
+  morp      varchar2(255) NOT NULL,
+  point     number NOT NULL,
+  content   varchar2(255) NOT NULL,
+  pointdate date NOT NULL,
+  PRIMARY KEY (pointnum));
+ALTER TABLE point ADD CONSTRAINT point_MEMnum_fk FOREIGN KEY (MEMnum) REFERENCES MEM (num) ON DELETE CASCADE ENABLE;
+CREATE SEQUENCE point_SEQ
+INCREMENT BY 1 START WITH 1;
+------------------------------------------------------
+-- 회원 로그인 기록 테이블
+CREATE TABLE memloginlog (
+  lognum    number,  --기본키
+  idn     varchar2(100) NOT NULL, --외래키 멤버테이블의 이메일 참조
+  reip      nvarchar2(100) NOT NULL,
+  uagent    varchar2(150) NOT NULL,
+  status    varchar2(100) NOT NULL,
+  logtime date default sysdate not null,
+  PRIMARY KEY (lognum));
+ALTER TABLE memloginlog ADD CONSTRAINT memloginlog_idn_fk FOREIGN KEY (idn) REFERENCES MEM (email) ON DELETE Cascade;
+
+CREATE SEQUENCE memloginlog_seq
+INCREMENT BY 1 START WITH 1;
+
+--운영자 계정 테이블
+CREATE TABLE ADMINS (
+    ADNUM NUMBER(19,0) NOT NULL, -- 기본키
+    DEPTNO NUMBER NOT NULL, -- 부서번호
+    ADTEL VARCHAR2(20) NOT NULL, -- 담당자 번호
+    ADEMAIL VARCHAR2(30) NOT NULL UNIQUE, -- 담당자 아이디(이메일) 유니크 걸기
+    ADPWD VARCHAR2(30) NOT NULL, -- 비번
+    ROLE_TYPE VARCHAR2(20) DEFAULT 'ADMIN' NOT NULL,
+    PRIMARY KEY (ADNUM)
+);
+
+CREATE SEQUENCE ADMINS_SEQ
+INCREMENT BY 1 START WITH 1;
+
+--방문자 수 카운트 테이블
+CREATE TABLE VISIT(
+	Countnum NUMBER NOT NULL, -- 방문자 수 카운트
+	VISIT_DATE DATE NOT NULL --방문 날짜
+);
+
+
+----------------------------------------
+
+-- 펀딩 업로드 테이블
+CREATE TABLE FBOARD (
+  funnum      number,									-- 펀딩글 번호
+  fupmemnum   number NOT NULL,				-- 펀딩 업로드 회원 번호
+  funcategory VARCHAR2(50) NOT NULL,	-- 펀딩 영화 카테고리
+  funtitle    varchar2(255) NOT NULL,	-- 펀딩 제목
+  funwriter		varchar2(45) NOT NULL,	-- 펀딩 업로드 작성자
+  content     clob NOT NULL,					-- 펀딩 본문 내용
+  funpreview  clob NOT NULL,					-- 펀딩 미리보기
+  targetprice number NOT NULL,				-- 목표금액
+  cost        number(10) NOT NULL,		-- 펀딩 금액(목록박스)
+  postimgn    varchar2(255) NOT NULL,	-- 펀딩 포스터이미지
+  sdate       date NOT NULL,					-- 펀딩 시작일
+  fdate       date NOT NULL,					-- 펀딩 종료일
+  contentimg  VARCHAR2(255),					-- 펀딩 내용 이미지
+  funvideo    varchar2(255),					-- 펀딩 비디오파일
+  actpic      varchar2(255),					-- 배우 이미지
+  funpurpose  clob,										-- 펀딩 목적
+  funbudget   clob,										-- 펀딩 예산안
+  fupdate     date NOT NULL,					-- 펀딩글 작성일
+  PRIMARY KEY (funnum));
+ALTER TABLE FBOARD ADD CONSTRAINT FBOARD_fupmemnum_fk FOREIGN KEY (fupmemnum) REFERENCES MEM (num) ON DELETE CASCADE ENABLE;
+
+CREATE SEQUENCE FBOARD_SEQ
+INCREMENT BY 1 START WITH 1;
+
+-- 펀딩 참여
+CREATE TABLE FUNDING_PARTI (
+  fmem_num   number NOT NULL,
+  funnum_num number NOT NULL,
+  funmoney   number NOT NULL,
+  funstatus  varchar2(100) DEFAULT 'N' NOT NULL, --참여 후에는 'P'
+  joindate   date NOT NULL,
+  PRIMARY KEY (fmem_num,
+  funnum_num));
+ALTER TABLE FUNDING_PARTI ADD CONSTRAINT FUNDING_PARTI_fmem_num_fk FOREIGN KEY (fmem_num) REFERENCES MEM (num) ON DELETE CASCADE ENABLE;
+ALTER TABLE FUNDING_PARTI ADD CONSTRAINT FUNDING_PARTI_funnum_num_num FOREIGN KEY (funnum_num) REFERENCES FBOARD (funnum) ON DELETE CASCADE ENABLE;
+--------------------------------------------------------------------------------
+--이벤트 작성 게시판 ( 운영자작성)
+--EVWRITER VARCHAR2(45) DEFAULT 'ADMIN', --외래키(비활성화) 관리자 나중에  : 관리자 계정의 이름
+
+CREATE TABLE EVBOARD (
+  EVNUM number NOT NULL, --기본키
+  EVTITLE varchar2(100) NOT NULL,
+	EVCONTENT CLOB NOT NULL,
+	REWARD VARCHAR2(255),
+	EVIMG  varchar2(100),
+	EVVEO  varchar2(100), --영상 파일 이름
+	EVHIT NUMBER NOT NULL,
+ 	EVSDATE date NOT NULL,  --이벤트 시작일
+  EVFDATE DATE NOT NULL,  --이벤트 종료일
+	EVWDATE DATE NOT NULL,  --이벤트 게시글 작성일
+  PRIMARY KEY (EVNUM)
+  );
+--ALTER TABLE EVBOARD CONSTRAINT EVBOARD_EWRITER_FK FOREIGN KEY (EWRITER) REFERENCES ADMIN (NAME) ON DELETE Cascade;
+
+-----------이벤트 참여 댓글  (회원만 작성)
+CREATE TABLE EVPBOARD (  --회원이 올린 이벤트 참여글 테이블
+  EVPNUM  number NOT NULL,  --기본키
+  EVBOARDNUM NUMBER NOT NULL, 	--외래키 : EVBOARD 이벤트 테이블의 EVNUM 이벤트 게시글 넘버
+  EVWRITER VARCHAR2(40) NOT NULL,  -- 회원 닉네임  / 작성자
+  EVID VARCHAR2(40) NOT NULL,  --회원 이메일 / 수정 삭제 등에 필요
+  EVCONT CLOB NOT NULL, -- 댓글 내용 ( 링크나 응원 글이든 뭐든)
+	EVSTATUS VARCHAR2(10) DEFAULT 'n' NOT NULL CONSTRAINT EVSTATUS_CHECK CHECK (EVSTATUS IN ('y','n')), --참여여부  y: 참여 / n: 미참여(디폴트값)
+	WIN VARCHAR2(30) DEFAULT 'd' NOT NULL CONSTRAINT WIN_CHECK CHECK (WIN IN ('d','y','n')), --당첨여부    d(미참여거나, 추첨 전)(디폴트값)  / y:당첨  / n: 미당첨
+  EVPDATE date NOT NULL,  --참여일
+  PRIMARY KEY (EVPNUM)
+  );
+ALTER TABLE EVPBOARD ADD CONSTRAINT EVPBOARD_EVBOARD_EVBOARDNUM_FK FOREIGN KEY (EVBOARDNUM) REFERENCES EVBOARD (EVNUM) ON DELETE CASCADE;
+
+--sequence
+CREATE SEQUENCE EVBOARD_SEQ
+START WITH 1
+INCREMENT BY 1;
+
+CREATE SEQUENCE EVPBOARD_SEQ
+START WITH 1
+INCREMENT BY 1;
+
+-- 이벤트  트리거(INSERT), 프로시저(수정) )
+CREATE OR REPLACE TRIGGER EVPBOARD_CHECK_STATUS
+BEFORE INSERT ON EVPBOARD
+FOR EACH ROW
+DECLARE
+    count_y NUMBER; -- Status 'y' 갯수를 뜻하는 변수
+BEGIN
+    -- Check if the user has already posted a 'y' status comment for the same event
+    SELECT COUNT(*)
+    INTO count_y
+    FROM EVPBOARD
+    WHERE EVBOARDNUM = :NEW.EVBOARDNUM
+    AND EVWRITER = :NEW.EVWRITER
+    AND EVSTATUS = 'y';
+
+    IF :NEW.EVSTATUS = 'y' AND count_y > 0 THEN
+        -- If the user has already posted a 'y' status comment, set EVSTATUS to 'n'
+        :NEW.EVSTATUS := 'n';
+        DBMS_OUTPUT.PUT_LINE('이미 이 이벤트에 참여한 회원 입니다.');
+    ELSE
+        -- If the user has not posted a 'y' status comment, set EVSTATUS to 'y'
+        :NEW.EVSTATUS := 'y';
+    END IF;
+END;
+/
+
+
+--------------gtp 수정 코드
+CREATE OR REPLACE TRIGGER EVPBOARD_BEFORE_INSERT
+BEFORE INSERT ON EVPBOARD
+FOR EACH ROW
+DECLARE
+    count_y NUMBER;
+    v_user_input VARCHAR2(1); -- 사용자가 입력한 값
+BEGIN
+    -- 사용자에게 값을 입력 받는 로직이 필요하며, 이 예시에서는 'y'나 'n'을 입력한다고 가정합니다.
+    -- v_user_input에 사용자 입력 값 할당
+
+    -- Check if the user has already posted a 'y' status comment for the same event
+    SELECT COUNT(*)
+    INTO count_y
+    FROM EVPBOARD
+    WHERE EVBOARDNUM = :NEW.EVBOARDNUM
+    AND EVWRITER = :NEW.EVWRITER
+    AND EVSTATUS = 'y';
+
+    IF v_user_input = 'n' THEN
+        -- If the user has not posted a 'y' status comment, set EVSTATUS to 'n'
+        :NEW.EVSTATUS := 'n';
+    ELSIF count_y > 0 THEN
+        -- If the user has already posted a 'y' status comment, set EVSTATUS to 'n'
+        :NEW.EVSTATUS := 'n';
+        DBMS_OUTPUT.PUT_LINE('이미 이 이벤트에 참여한 회원 입니다.');
+    ELSE
+        -- Set EVSTATUS to the user's input value
+        :NEW.EVSTATUS := v_user_input;
+    END IF;
+END;
+/
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------
+-- 파티모집,댓글 테이블
+CREATE TABLE PARTY (
+  partynum     number,
+  pmemnum      number NOT NULL,
+  pwriter			 varchar2(45) NOT null,
+  partytitle   varchar2(100) NOT NULL,
+  partycontent clob NOT NULL,
+  pimgn        varchar2(300),
+  phit         number NOT NULL,
+  partyloc     varchar2(150) NOT NULL,
+  partydate    date NOT NULL,
+  pupdate      date NOT NULL,
+  PRIMARY KEY (partynum));
+CREATE TABLE PARTYCOMM (
+  pcnum          number,
+  party_partynum number NOT NULL,
+  pcwriter			 VARCHAR2(45) NOT NULL,
+  pcomm          varchar2(400) NOT NULL,
+  pcdate         date NOT NULL,
+  PRIMARY KEY (pcnum));
+ALTER TABLE PARTY ADD CONSTRAINT PARTY_pmemnum_fk FOREIGN KEY (pmemnum) REFERENCES MEM (num) ON DELETE CASCADE ENABLE;
+ALTER TABLE PARTYCOMM ADD CONSTRAINT PARTYCOMM_party_partynum_fk FOREIGN KEY (party_partynum) REFERENCES PARTY (partynum) ON DELETE CASCADE ENABLE;
+-- ALTER TABLE partycomm ADD pstar NUMBER(20) DEFAULT 0 NOT NULL;
+
+CREATE SEQUENCE party_seq
+INCREMENT BY 1 START WITH 1;
+CREATE SEQUENCE partyCOMM_seq
+INCREMENT BY 1 START WITH 1;
+
+--------------------------------------------------------
+-- 굿즈교환, 댓글 테이블
+CREATE TABLE TRBOARD (
+  tradenum  number,
+  trmemnum  number NOT NULL,
+  trwriter  varchar2(45) NOT NULL,
+  trtitle   varchar2(100) NOT NULL,
+  trimgn    varchar2(300) NOT NULL,
+  trhit     number NOT NULL,
+  trprice   number(20) NOT NULL,
+  trcontent clob NOT NULL,
+  trloc     varchar2(100) NOT NULL,
+  trupdate  date NOT NULL,
+  PRIMARY KEY (tradenum));
+CREATE TABLE TRCOMM (
+  tcnum          number,
+  trade_tradenum number NOT NULL,
+  tcwriter       varchar2(45) NOT NULL,
+  tcomm          varchar2(400) NOT NULL,
+  tcdate         date NOT NULL,
+  PRIMARY KEY (tcnum));
+ALTER TABLE TRCOMM ADD CONSTRAINT TRCOMM_trade_tradenum_fk FOREIGN KEY (trade_tradenum) REFERENCES TRBOARD (tradenum) ON DELETE CASCADE ENABLE;
+ALTER TABLE TRBOARD ADD CONSTRAINT TRBOARD_trmemnum_fk FOREIGN KEY (trmemnum) REFERENCES MEM (num) ON DELETE CASCADE ENABLE;
+
+
+CREATE SEQUENCE trboard_SEQ
+INCREMENT BY 1 START WITH 1;
+CREATE SEQUENCE trCOMM_SEQ
+INCREMENT BY 1 START WITH 1;
+
+-----------------------------------------------------------------------
+-- 뉴스 업로드 테이블 (관리자 신경X, 일단 로그인은 필수)
+CREATE TABLE NEWS_UPLOAD (
+	nnum     number,
+  nwriter  varchar2(45) NOT NULL,
+  ncompany VARCHAR2(50) NOT NULL,
+  ntitle   varchar2(100) NOT NULL,
+  ncontent clob NOT NULL,
+  npreview varchar2(200) NOT NULL,
+  nimgn    varchar2(300) NOT NULL,
+  nvideon	 varchar2(300),
+  nhit     number NOT NULL,
+  ndate    date NOT NULL,
+  PRIMARY KEY (nnum));
+
+  CREATE SEQUENCE newsNum_seq
+  INCREMENT BY 1
+  START WITH 1;
+
+
+--미정  운영자 계정 로그인 기록
+CREATE TABLE adminloginlog (
+  adlognum    number(10),  --기본키
+  adid     varchar2(20) NOT NULL, --외래키 어드민 테이블의 이메일 참조
+  adreip      nvarchar2(30) NOT NULL,
+  aduagent    varchar2(120) NOT NULL,
+  adstatus    varchar2(10) NOT NULL,
+  adlogtime date default sysdate not null,
+  PRIMARY KEY (adlognum));
+ALTER TABLE adminloginlog ADD CONSTRAINT adminloginlog_adid_fk FOREIGN KEY (adid) REFERENCES ADMINS (ADEMAIL) ON DELETE Cascade;
+
+CREATE SEQUENCE adminloginlog_seq
+INCREMENT BY 1 START WITH 1;
+
+
+
+
+
+
